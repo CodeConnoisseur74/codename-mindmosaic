@@ -1,0 +1,33 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "FiraCode Nerd Font Mono",
+    "editor.fontLigatures": true,
+    "editor.fontWeight": "bold",
+    "terminal.integrated.fontWeight": "bold",
+    "editor.inlayHints.fontFamily": "FiraCode Nerd Font Mono",
+    "terminal.integrated.fontFamily": "FiraCode Nerd Font Mono",
+    "editor.mouseWheelZoom": true,
+    "terminal.integrated.mouseWheelZoom": true,
+    "debug.console.fontFamily": "FiraCode Nerd Font Mono",
+    "scm.inputFontFamily": "FiraCode Nerd Font Mono",
+    "chat.editor.fontFamily": "FiraCode Nerd Font Mono",
+    "chat.editor.fontWeight": "bold",
+    "workbench.externalBrowser": "firefox",
+    "python.analysis.importFormat": "relative",
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 119,
+    "html.format.templating": true,
+    "files.associations": {
+        "**/*.html": "html",
+    },
+    "[html]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "django-html": "html",
+    },
+    "code-runner.runInTerminal": true,
+}
