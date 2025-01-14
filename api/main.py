@@ -1,7 +1,20 @@
-import uuid
+from dotenv import load_dotenv
+import os
+import marvin
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from studyplan_ai.study_plan import (
+    create_study_plan,
+)
+
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Access the API key
+openai_api_key = os.getenv("MARVIN_OPENAI_API_KEY")
+marvin.settings.openai.api_key = openai_api_key
 
 app = FastAPI()
 
@@ -27,13 +40,10 @@ class StudyPlan(StudyPlanBase):
 
 
 @app.post("/create_study_plan", response_model=StudyPlan)
-async def create_study_plan(plan: StudyPlanInput) -> StudyPlan:
-    plan_id = str(uuid.uuid4())
-    study_plan = StudyPlan(
-        id=plan_id,
-        **plan.dict(),
-    )
-    study_plans[plan_id] = study_plan
+async def create_study_plan_endpoint(plan: StudyPlanInput) -> StudyPlan:
+    # Delegate the creation logic to another function
+    study_plan = create_study_plan(plan)
+    study_plans[study_plan.id] = study_plan
     return study_plan
 
 
@@ -41,5 +51,4 @@ async def create_study_plan(plan: StudyPlanInput) -> StudyPlan:
 async def get_study_plan(plan_id: str) -> StudyPlan:
     if plan_id not in study_plans:
         raise HTTPException(status_code=404, detail="Study plan not found.")
-
     return study_plans[plan_id]
