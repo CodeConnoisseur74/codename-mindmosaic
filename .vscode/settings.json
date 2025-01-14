@@ -30,4 +30,5 @@
         "django-html": "html",
     },
     "code-runner.runInTerminal": true,
+    "postman.account.region": "EU",
 }

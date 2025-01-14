@@ -8,12 +8,13 @@ dependencies = [
     "fastapi[standard]>=0.115.6",
     "sqlmodel>=0.0.22",
     "streamlit>=1.41.1",
+    "uvicorn>=0.34.0",
 ]
 
-[dependency-groups]
-dev = [
+[tool.uv]
+dev-dependencies = [
     "flake8>=7.1.1",
+    "pytest>=8.3.3",
     "pre-commit>=4.0.1",
-    "pytest>=8.3.4",
-    "ruff>=0.9.0",
+    "ruff>=0.7.2",
 ]
