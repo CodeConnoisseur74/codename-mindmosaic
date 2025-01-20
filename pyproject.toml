@@ -20,3 +20,18 @@ dev-dependencies = [
     "pre-commit>=4.0.1",
     "ruff>=0.7.2",
 ]
+
+[tool.ruff]
+src = ["codename-mindmosaic", "tests"]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
