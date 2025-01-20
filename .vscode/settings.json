@@ -12,7 +12,6 @@
     "scm.inputFontFamily": "FiraCode Nerd Font Mono",
     "chat.editor.fontFamily": "FiraCode Nerd Font Mono",
     "chat.editor.fontWeight": "bold",
-    "workbench.externalBrowser": "firefox",
     "python.analysis.importFormat": "relative",
     "editor.wordWrap": "on",
     "editor.wordWrapColumn": 119,
@@ -20,6 +19,21 @@
     "files.associations": {
         "**/*.html": "html",
     },
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+            "source.organizeImports": "explicit"
+        }
+    },
+    "flake8.args": [
+        "--max-line-length=88",
+        "--ignore=E402,F841,F401,E302,E305"
+    ],
     "[html]": {
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
@@ -31,4 +45,11 @@
     },
     "code-runner.runInTerminal": true,
     "postman.account.region": "EU",
+    "ruff.lineLength": 88,
+    "python.analysis.fixAll": [
+
+    ],
+    "autoDocstring.docstringFormat": "pep257",
+    "autoDocstring.startOnNewLine": true,
+    "autoDocstring.includeName": true,
 }
