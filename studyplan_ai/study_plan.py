@@ -77,4 +77,8 @@ if __name__ == "__main__":
             preferred_topics=["Python", "OOP"],
         )
     )
-    print(plan)
+    for week_day in plan.study_plan:
+        print(f"Day {week_day.day}:")
+        for activity in week_day.activities:
+            print(f" - {activity.activity} ({activity.time_minutes} minutes)")
+        print()
