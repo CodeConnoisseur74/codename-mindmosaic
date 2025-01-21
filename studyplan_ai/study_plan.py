@@ -1,20 +1,32 @@
-import uuid
-
 import marvin
 from pydantic import BaseModel, Field
 
 
 class StudyPlanInput(BaseModel):
-    goals: str = Field(..., description='The goals for the study plan')
-    time_per_day: int = Field(..., description='Time allocated per day for study')
-    preferred_topics: list[str] = Field(..., description='Topics preferred for study')
+    goals: str = Field(..., description="The goals for the study plan")
+    days: int = Field(..., description="Number of days to generate the study plan for")
+    time_per_day: int = Field(..., description="Time allocated per day for study")
+    preferred_topics: list[str] = Field(..., description="Topics preferred for study")
+
+
+class Activity(BaseModel):
+    time_minutes: int = Field(
+        ..., description="Time allocated to the activity in minutes"
+    )
+    activity: str = Field(..., description="Description of the activity")
+
+
+class WeekPlan(BaseModel):
+    day: int = Field(..., description="Day of the week")
+    activities: list[Activity] = Field(
+        ..., description="List of activities for the day"
+    )
 
 
 class StudyPlanOutput(BaseModel):
-    plan_id: str = Field(..., description='The unique identifier for the study plan')
-    goals: str
-    time_per_day: int
-    preferred_topics: list[str]
+    study_plan: list[WeekPlan] = Field(
+        ..., description="List of activities for each day of the week"
+    )
 
 
 @marvin.fn
@@ -30,12 +42,8 @@ def create_study_plan(input_data: StudyPlanInput) -> StudyPlanOutput:
     (e.g., ["Python", "OOP"]).
 
     Output:
-    Returns a dictionary where each key is a day (e.g., 1, 2, 3)
-    and the value is a list of activities for that day.
-    Each activity is a dictionary containing:
-    - `time_minutes`: Time allocated to the activity in minutes
-    (ensures daily total does not exceed `time_per_day`).
-    - `activity`: A description of the activity (e.g., "Read OOP theory").
+    - List of week days, where each day has one or more activities depending on
+    time effort per day.
 
     Ensure:
     - Activities are diverse and derived from `preferred_topics`.
@@ -58,10 +66,19 @@ def create_study_plan(input_data: StudyPlanInput) -> StudyPlanOutput:
         ]
     }
     """
-    plan_id = str(uuid.uuid4())
-    return StudyPlanOutput(
-        plan_id=plan_id,
-        goals=input_data.goals,
-        time_per_day=input_data.time_per_day,
-        preferred_topics=input_data.preferred_topics,
+
+
+if __name__ == "__main__":
+    plan = create_study_plan(
+        StudyPlanInput(
+            goals="Learn Python OOP concepts",
+            days=7,
+            time_per_day=60,
+            preferred_topics=["Python", "OOP"],
+        )
     )
+    for week_day in plan.study_plan:
+        print(f"Day {week_day.day}:")
+        for activity in week_day.activities:
+            print(f" - {activity.activity} ({activity.time_minutes} minutes)")
+        print()
