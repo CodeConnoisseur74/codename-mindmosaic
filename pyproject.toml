@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.6",
+    "marvin>=2.3.8",
+    "python-dotenv>=1.0.1",
     "sqlmodel>=0.0.22",
     "streamlit>=1.41.1",
     "uvicorn>=0.34.0",
@@ -18,3 +20,18 @@ dev-dependencies = [
     "pre-commit>=4.0.1",
     "ruff>=0.7.2",
 ]
+
+[tool.ruff]
+src = ["codename-mindmosaic", "tests"]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
