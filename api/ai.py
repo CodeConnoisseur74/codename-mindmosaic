@@ -43,12 +43,18 @@ def create_study_plan(input_data: StudyPlanInput) -> StudyPlanOutput:
 
 
 if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) != 5:
+        print('Usage: python ai.py <goals> <days> <time_per_day> <preferred_topics>')
+        sys.exit(1)
+    goals, days, time_per_day = sys.argv[1:4]
+    days = int(days)
+    time_per_day = int(time_per_day)
+    topics = sys.argv[4].split(',')
     plan = create_study_plan(
         StudyPlanInput(
-            goals='Learn Python OOP concepts',
-            days=7,
-            time_per_day=60,
-            preferred_topics=['Python', 'OOP'],
+            goals=goals, days=days, time_per_day=time_per_day, preferred_topics=topics
         )
     )
     for week_day in plan.study_plan:
