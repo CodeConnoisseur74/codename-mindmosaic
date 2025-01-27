@@ -7,6 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.6",
     "marvin>=2.3.8",
+    "psycopg2>=2.9.10",
+    "python-decouple>=3.8",
     "python-dotenv>=1.0.1",
     "sqlmodel>=0.0.22",
     "streamlit>=1.41.1",
