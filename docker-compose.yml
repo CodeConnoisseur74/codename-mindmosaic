@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: code-name-mosaicdb
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Bobby11
+      POSTGRES_DB: codename-mindmosaicdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
