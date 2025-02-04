@@ -46,7 +46,7 @@ def authenticate_user(username: str, password: str):
     user = get_user(username)
     if not user or not verify_password(password, user.hashed_password):
         return False
-    return User | None
+    return user
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

@@ -13,7 +13,7 @@ from .ai import create_study_plan
 from .auth import authenticate_user, create_access_token, get_current_user
 from .db import get_session, init_db, save_study_plan
 from .db import get_study_plan as get_study_plan_db
-from .models import StudyPlan, StudyPlanInput, Token, User
+from .models import StudyPlan, StudyPlanInput, Token, User, UserCreate, UserResponse
 
 # Load secret settings
 openai_api_key = config('MARVIN_OPENAI_API_KEY')
@@ -34,8 +34,8 @@ app = FastAPI(lifespan=lifespan)
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
-@app.post('/register/', response_model=User)
-async def register_user(user: User, session: Session = Depends(get_session)):
+@app.post('/register/', response_model=UserResponse)
+async def register_user(user: UserCreate, session: Session = Depends(get_session)):
     # Check if the user already exists
     db_user = session.query(User).filter(User.username == user.username).first()
     if db_user:
@@ -43,11 +43,20 @@ async def register_user(user: User, session: Session = Depends(get_session)):
 
     # Hash the password and create a new user
     hashed_password = pwd_context.hash(user.password)
-    db_user = User(username=user.username, hashed_password=hashed_password)
+    db_user = User(
+        username=user.username,
+        hashed_password=hashed_password,
+        full_name=user.full_name,
+        email=user.email,
+    )
 
     # Save the new user to the database
     session.add(db_user)
-    session.commit()
+    try:
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail='Internal Server Error') from e
     session.refresh(db_user)
     return db_user
 
@@ -77,7 +86,7 @@ async def get_study_plan(
     plan_id: UUID,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
-) -> StudyPlan | None:
+) -> StudyPlan:
     study_plan = get_study_plan_db(
         plan_id, current_user.id
     )  # Ensure the plan is owned by the current user

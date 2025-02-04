@@ -1,10 +1,10 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlmodel import Column, Field, SQLModel
+from sqlmodel import Column, Field, Relationship, SQLModel
 
 
 class StudyPlanInput(SQLModel):
@@ -38,8 +38,28 @@ class StudyPlan(SQLModel, table=True):
         sa_column=Column(JSONB), description='Generated study plan'
     )
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    # Assuming user_id is required to link to the User model
     user_id: Optional[int] = Field(default=None, foreign_key='user.id')
+
+    # Define the link back to User
+    user: 'User' = Relationship(back_populates='study_plans')
+
+
+class UserCreate(BaseModel):
+    username: str
+    full_name: Optional[str] = None
+    email: EmailStr
+    password: str
+
+
+# Ensure you also have the UserResponse model defined if it's used in your response
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    full_name: Optional[str] = None
+    email: EmailStr
+
+    class Config:
+        orm_mode = True
 
 
 class User(SQLModel, table=True):
@@ -48,6 +68,9 @@ class User(SQLModel, table=True):
     full_name: Optional[str] = None
     email: Optional[str] = None
     hashed_password: str
+
+    # Define a list of StudyPlans
+    study_plans: List[StudyPlan] = Relationship(back_populates='user')
 
 
 class Token(BaseModel):
