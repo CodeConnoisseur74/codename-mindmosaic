@@ -55,7 +55,6 @@ async def register_user(user: User, session: Session = Depends(get_session)):
 @app.post(
     '/create_study_plan',
     response_model=StudyPlan,
-    dependencies=[Depends(get_current_user)],
 )
 async def create_study_plan_endpoint(
     plan: StudyPlanInput,
@@ -78,7 +77,7 @@ async def get_study_plan(
     plan_id: UUID,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
-) -> StudyPlan:
+) -> StudyPlan | None:
     study_plan = get_study_plan_db(
         plan_id, current_user.id
     )  # Ensure the plan is owned by the current user

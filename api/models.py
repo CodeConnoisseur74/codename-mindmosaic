@@ -29,7 +29,7 @@ class StudyPlanOutput(SQLModel):
 
 
 class StudyPlan(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     plan_id: UUID
     input_data: dict = Field(
         sa_column=Column(JSONB), description='Input data for the study plan'

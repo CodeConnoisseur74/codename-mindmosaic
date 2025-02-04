@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 
 from .models import TokenData, User
 
-SECRET_KEY = 'your_secret_key_here'
+SECRET_KEY = 'SECRET_KEY'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -34,6 +34,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
+# Can remove and load user from database
 def get_user(username: str):
     user = users_db.get(username)
     if user:
@@ -45,7 +46,7 @@ def authenticate_user(username: str, password: str):
     user = get_user(username)
     if not user or not verify_password(password, user.hashed_password):
         return False
-    return user
+    return User | None
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
