@@ -71,9 +71,7 @@ async def create_study_plan_endpoint(
     session: Session = Depends(get_session),
 ) -> StudyPlan:
     output_plan = create_study_plan(plan)
-    db_study_plan = save_study_plan(
-        plan, output_plan, current_user.id
-    )  # Pass current_user.id to associate the plan
+    db_study_plan = save_study_plan(plan, output_plan, current_user.id)
     return db_study_plan
 
 
@@ -87,9 +85,7 @@ async def get_study_plan(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ) -> StudyPlan:
-    study_plan = get_study_plan_db(
-        plan_id, current_user.id
-    )  # Ensure the plan is owned by the current user
+    study_plan = get_study_plan_db(plan_id, current_user.id)
     if study_plan is None:
         raise HTTPException(
             status_code=404, detail='Study plan not found or not authorised to access.'

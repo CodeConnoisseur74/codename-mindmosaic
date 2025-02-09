@@ -51,7 +51,6 @@ class UserCreate(BaseModel):
     password: str
 
 
-# Ensure you also have the UserResponse model defined if it's used in your response
 class UserResponse(BaseModel):
     id: int
     username: str
@@ -59,7 +58,7 @@ class UserResponse(BaseModel):
     email: EmailStr
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class User(SQLModel, table=True):

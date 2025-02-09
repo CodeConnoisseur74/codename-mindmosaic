@@ -6,7 +6,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from .models import TokenData, User
+from .db import get_user
+from .models import TokenData
 
 SECRET_KEY = 'SECRET_KEY'
 ALGORITHM = 'HS256'
@@ -14,16 +15,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
-
-# Dummy user database
-users_db = {
-    'example_user': {
-        'username': 'example_user',
-        'full_name': 'Example User',
-        'email': 'example@example.com',
-        'hashed_password': pwd_context.hash('example_password'),
-    }
-}
 
 
 def verify_password(plain_password, hashed_password):
@@ -34,17 +25,9 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-# Can remove and load user from database
-def get_user(username: str):
-    user = users_db.get(username)
-    if user:
-        return User(**user)
-    return None
-
-
 def authenticate_user(username: str, password: str):
     user = get_user(username)
-    if not user or not verify_password(password, user.hashed_password):
+    if user is None or not verify_password(password, user.hashed_password):
         return False
     return user
 
@@ -74,7 +57,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(username=token_data.username)
+    user = get_user(token_data.username)
     if user is None:
         raise credentials_exception
     return user
