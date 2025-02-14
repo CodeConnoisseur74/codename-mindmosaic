@@ -5,9 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.14.1",
     "fastapi[standard]>=0.115.6",
     "marvin>=2.3.8",
     "passlib[bcrypt]>=1.7.4",
+    "psycopg-binary>=3.2.4",
     "psycopg2>=2.9.10",
     "python-decouple>=3.8",
     "python-dotenv>=1.0.1",
