@@ -11,13 +11,19 @@ RUN pip install --no-cache-dir uv
 COPY pyproject.toml uv.lock ./
 
 # Create a virtual environment and synchronise dependencies
-RUN uv venv && uv sync
+RUN uv sync
 
 # Copy the rest of your application code
 COPY . .
 
 # Expose the port your app runs on
 EXPOSE 8000
+
+# Copy the wait-for-it script into the container from the project root
+COPY wait-for-it.sh /app/wait-for-it.sh
+
+# Make the script executable
+RUN chmod +x /app/wait-for-it.sh
 
 # Copy the startup script into the container
 COPY start.sh /app/start.sh

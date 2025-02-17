@@ -21,7 +21,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "sh ./wait-for-postgres.sh && uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+      - "sh ./wait-for-postgres.sh && uvicorn api.main:app --reload --host 0.0.0.0 --port 8000"
 
   pgsql:
     image: postgres:13.4
