@@ -25,11 +25,4 @@ COPY wait-for-it.sh /app/wait-for-it.sh
 # Make the script executable
 RUN chmod +x /app/wait-for-it.sh
 
-# Copy the startup script into the container
-COPY start.sh /app/start.sh
-
-# Make the script executable
-RUN chmod +x /app/start.sh
-
-# Use the script as the command to run
-CMD ["/app/start.sh"]
+CMD ["sh", "-c", "wait-for-it db:5432 -- uv run uvicorn api.main:app --host 0.0.0.0 --port 8000"]
