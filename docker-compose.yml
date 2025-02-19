@@ -4,9 +4,9 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Bobby11
-      POSTGRES_DB: codename-mindmosaicdb
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -18,20 +18,16 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8000"
-    working_dir: /root/fastapi
+    working_dir: /app
     tty: true
+    env_file:
+      - .env  # Explicitly load environment variables
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_DATABASE=codename-mindmosaicdb
-      - DB_USER=postgres
-      - DB_PASSWORD=Bobby11
-    volumes:
-      - ./fastapi:/root/fastapi
+      DATABASE_URL: ${DATABASE_URL}
+      MARVIN_OPENAI_API_KEY: ${MARVIN_OPENAI_API_KEY}
     depends_on:
       - db
-    command:
-      - "./wait-for-it.sh db:5432 -- uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+    command: ["/app/wait-for-it.sh", "db:5432", "--", "uv", "run", "python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 volumes:
   postgres_data:
