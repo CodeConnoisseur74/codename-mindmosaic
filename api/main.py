@@ -30,18 +30,15 @@ async def lifespan(app):
 
 app = FastAPI(lifespan=lifespan)
 
-# Define the password hashing context
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 @app.post('/register/', response_model=UserResponse)
 async def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    # Check if the user already exists
     db_user = session.query(User).filter(User.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail='Username already registered')
 
-    # Hash the password and create a new user
     hashed_password = pwd_context.hash(user.password)
     db_user = User(
         username=user.username,
@@ -50,7 +47,6 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
         email=user.email,
     )
 
-    # Save the new user to the database
     session.add(db_user)
     try:
         session.commit()
