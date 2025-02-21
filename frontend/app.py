@@ -38,7 +38,6 @@ username = st.text_input('Enter Username:', '')
 password = st.text_input('Enter Password:', '', type='password')
 plan_id = st.text_input('Enter Plan ID:', '')
 submit = st.button('Submit')
-print(username, password, plan_id)
 
 if username and password and plan_id:
     token = get_token(username, password)
@@ -46,7 +45,6 @@ if username and password and plan_id:
     if not token:
         st.error('Invalid credentials')
     else:
-        # Fetch the study plan
         study_plan = get_study_plan(plan_id, token)
         if study_plan:
             input_data = study_plan.get('input_data')
