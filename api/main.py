@@ -13,6 +13,7 @@ from .ai import create_study_plan
 from .auth import authenticate_user, create_access_token, get_current_user
 from .db import get_session, init_db, save_study_plan
 from .db import get_study_plan as get_study_plan_db
+from .db import get_study_plans as get_study_plans_db
 from .models import StudyPlan, StudyPlanInput, Token, User, UserCreate, UserResponse
 
 # Load secret settings
@@ -87,6 +88,18 @@ async def get_study_plan(
             status_code=404, detail='Study plan not found or not authorised to access.'
         )
     return study_plan
+
+@app.get(
+    '/get_study_plans',
+    response_model=list[StudyPlan],
+    dependencies=[Depends(get_current_user)],
+)
+async def get_study_plans(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+) -> list[StudyPlan]:
+    study_plans = get_study_plans_db(current_user.id)
+    return study_plans
 
 
 @app.post('/token', response_model=Token)
