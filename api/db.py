@@ -51,3 +51,10 @@ def get_study_plan(plan_id: uuid.UUID, user_id: int) -> StudyPlan | None:
         )
         result = session.exec(statement).first()
         return result
+
+
+def get_study_plans(user_id: int) -> list[StudyPlan]:
+    with Session(engine) as session:
+        statement = select(StudyPlan).where(StudyPlan.user_id == user_id)
+        result = session.exec(statement).all()
+        return result
