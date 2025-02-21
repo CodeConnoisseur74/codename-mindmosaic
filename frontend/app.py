@@ -16,7 +16,7 @@ def get_token(username, password):
     payload = {'username': username, 'password': password}
     response = requests.post(TOKEN_ENDPOINT, data=payload, timeout=10)
     if response.status_code == 200:
-        return response.json().get('token')
+        return response.json().get('access_token')
     else:
         st.error('Error fetching token from API')
         return None
@@ -29,7 +29,7 @@ def get_study_plan(plan_id, token):
     if response.status_code == 200:
         return response.json()
     else:
-        st.error('Error fetching data from API')
+        st.error(f'Error fetching data from API, status code: {response.status_code}')
         return None
 
 
@@ -37,12 +37,15 @@ def get_study_plan(plan_id, token):
 username = st.text_input('Enter Username:', '')
 password = st.text_input('Enter Password:', '', type='password')
 plan_id = st.text_input('Enter Plan ID:', '')
+submit = st.button('Submit')
+print(username, password, plan_id)
 
 if username and password and plan_id:
-    # Retrieve the token
     token = get_token(username, password)
 
-    if token:
+    if not token:
+        st.error('Invalid credentials')
+    else:
         # Fetch the study plan
         study_plan = get_study_plan(plan_id, token)
         if study_plan:
