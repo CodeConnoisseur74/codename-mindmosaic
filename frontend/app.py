@@ -5,7 +5,7 @@ from decouple import config
 
 # Load configuration from environment variables
 HOST = config('HOST', default='http://127.0.0.1')
-PORT = config('PORT', default='8000')
+PORT = config('PORT', default='8080')
 BASE_URL = f'{HOST}:{PORT}'
 STUDY_PLAN_ENDPOINT = BASE_URL + '/get_study_plan/'
 TOKEN_ENDPOINT = BASE_URL + '/token'
@@ -16,7 +16,7 @@ def get_token(username, password):
     payload = {'username': username, 'password': password}
     response = requests.post(TOKEN_ENDPOINT, data=payload, timeout=10)
     if response.status_code == 200:
-        return response.json().get('token')
+        return response.json().get('access_token')
     else:
         st.error('Error fetching token from API')
         return None
@@ -29,7 +29,7 @@ def get_study_plan(plan_id, token):
     if response.status_code == 200:
         return response.json()
     else:
-        st.error('Error fetching data from API')
+        st.error(f'Error fetching data from API, status code: {response.status_code}')
         return None
 
 
@@ -37,13 +37,14 @@ def get_study_plan(plan_id, token):
 username = st.text_input('Enter Username:', '')
 password = st.text_input('Enter Password:', '', type='password')
 plan_id = st.text_input('Enter Plan ID:', '')
+submit = st.button('Submit')
 
 if username and password and plan_id:
-    # Retrieve the token
     token = get_token(username, password)
 
-    if token:
-        # Fetch the study plan
+    if not token:
+        st.error('Invalid credentials')
+    else:
         study_plan = get_study_plan(plan_id, token)
         if study_plan:
             input_data = study_plan.get('input_data')
