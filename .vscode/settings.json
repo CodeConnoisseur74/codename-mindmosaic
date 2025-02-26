@@ -52,4 +52,5 @@
     "autoDocstring.docstringFormat": "pep257",
     "autoDocstring.startOnNewLine": true,
     "autoDocstring.includeName": true,
+    "workbench.externalBrowser": "firefox",
 }
