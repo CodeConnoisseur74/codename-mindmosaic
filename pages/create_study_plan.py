@@ -1,5 +1,3 @@
-import json
-
 import requests
 import streamlit as st
 
@@ -8,7 +6,17 @@ HOST = 'http://localhost'
 PORT = '8080'
 CREATE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/create_study_plan'
 
+# 🔹 Ensure user is logged in
+if 'token' not in st.session_state or not st.session_state['token']:
+    st.warning('You must log in to create a study plan.')
+    st.switch_page('pages/login.py')
 
+# 🔹 Check session state for study plan
+if 'study_plan' not in st.session_state:
+    st.session_state['study_plan'] = None
+
+
+# 🔹 Function to create a study plan
 def create_study_plan(goals, days, time_per_day, preferred_topics, token):
     headers = {'Authorization': f'Bearer {token}'}
     payload = {
@@ -18,31 +26,21 @@ def create_study_plan(goals, days, time_per_day, preferred_topics, token):
         'preferred_topics': preferred_topics,
     }
 
-    # Log payload for debugging
-    st.write(f'Payload being sent: {json.dumps(payload, indent=2)}')
-
     try:
         response = requests.post(
             CREATE_STUDY_PLAN_ENDPOINT, json=payload, headers=headers
         )
-
-        # Log the response for debugging
-        st.write(f'Response status code: {response.status_code}')
-        st.write(f'Response content: {response.content}')
-
         response.raise_for_status()
-
-        # Return the study plan data to be displayed
-        return response.json()
+        return response.json()  # Return study plan details
     except requests.exceptions.RequestException as e:
-        st.error(f'Request failed: {e}')
+        st.error(f'Failed to create study plan: {e}')
         return None
 
 
-# Streamlit page to create and display a study plan
-def create_study_plan_page():
-    st.title('Create Study Plan')
+st.title('Create Study Plan')
 
+# 🔹 Show the form only if no study plan exists
+if st.session_state['study_plan'] is None:
     goals = st.text_area('Goals:', '')
     days = st.number_input('Days:', min_value=1, step=1, value=1)
     time_per_day = st.number_input(
@@ -56,23 +54,31 @@ def create_study_plan_page():
             preferred_topics_list = [
                 topic.strip() for topic in preferred_topics.split(',')
             ]
+
             study_plan = create_study_plan(
                 goals,
                 days,
                 time_per_day,
                 preferred_topics_list,
-                st.session_state.get('token'),
+                st.session_state['token'],
             )
+
             if study_plan:
-                st.success('Study plan created successfully!')
-                st.subheader('Your Study Plan:')
-                st.write(study_plan)  # Display the study plan details
+                st.session_state['study_plan'] = (
+                    study_plan  # ✅ Save the study plan in session state
+                )
+                st.rerun()  # Refresh the page to show only the study plan
             else:
                 st.error('Failed to create study plan. Please try again.')
         else:
             st.error('Please fill in all fields with valid data.')
 
+# 🔹 Display Study Plan if Created
+if st.session_state['study_plan']:
+    st.success('Study plan created successfully!')
+    st.subheader('Your Study Plan:')
+    st.write(st.session_state['study_plan'])
 
-# Run the page
-if __name__ == '__main__':
-    create_study_plan_page()
+    if st.button('Create Another Study Plan'):
+        st.session_state['study_plan'] = None  # Reset state
+        st.rerun()  # Refresh the page
