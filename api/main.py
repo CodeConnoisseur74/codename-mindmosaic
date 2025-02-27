@@ -131,3 +131,29 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={'sub': user.username}, expires_delta=access_token_expires
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
+
+
+@app.delete('/delete_study_plan/{plan_id}')
+async def delete_study_plan(
+    plan_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    """
+    Delete a study plan if it belongs to the current user.
+    """
+    study_plan = (
+        session.query(StudyPlan)
+        .filter(StudyPlan.plan_id == plan_id, StudyPlan.user_id == current_user.id)
+        .first()
+    )
+
+    if not study_plan:
+        raise HTTPException(
+            status_code=404, detail='Study plan not found or unauthorized to delete.'
+        )
+
+    session.delete(study_plan)
+    session.commit()
+
+    return {'message': 'Study plan deleted successfully'}
