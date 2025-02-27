@@ -75,9 +75,27 @@ if st.session_state['study_plan'] is None:
 
 # 🔹 Display Study Plan if Created
 if st.session_state['study_plan']:
+    plan = st.session_state['study_plan']
+
     st.success('Study plan created successfully!')
-    st.subheader('Your Study Plan:')
-    st.write(st.session_state['study_plan'])
+    st.subheader('Your Study Plan')
+
+    # Extract plan details
+    input_data = plan.get('input_data', {})
+    study_plan_details = plan.get('study_plan', {}).get('study_plan', [])
+
+    st.write(f'**Goals:** {input_data.get("goals", "Not specified")}')
+    st.write(f'**Days:** {input_data.get("days", "N/A")}')
+    st.write(f'**Time per Day:** {input_data.get("time_per_day", "N/A")} minutes')
+    st.write(
+        f'**Preferred Topics:** {", ".join(input_data.get("preferred_topics", []))}'
+    )
+
+    # Display each day’s activities
+    for day in study_plan_details:
+        st.subheader(f'Day {day["day"]}')
+        for activity in day['activities']:
+            st.write(f'- {activity["activity"]} ({activity["time_minutes"]} min)')
 
     if st.button('Create Another Study Plan'):
         st.session_state['study_plan'] = None  # Reset state

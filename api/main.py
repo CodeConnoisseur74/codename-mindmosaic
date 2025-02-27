@@ -89,17 +89,32 @@ async def get_study_plan(
         )
     return study_plan
 
+
 @app.get(
     '/get_study_plans',
-    response_model=list[StudyPlan],
+    response_model=list[
+        dict
+    ],  # Return a list of dictionaries instead of raw DB objects
     dependencies=[Depends(get_current_user)],
 )
 async def get_study_plans(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
-) -> list[StudyPlan]:
+) -> list[dict]:
     study_plans = get_study_plans_db(current_user.id)
-    return study_plans
+
+    if not study_plans:
+        return []  # Return empty list instead of 404
+
+    return [
+        {
+            'plan_id': str(sp.plan_id),
+            'created_at': sp.created_at,
+            'input_data': sp.input_data,
+            'study_plan': sp.study_plan,
+        }
+        for sp in study_plans
+    ]
 
 
 @app.post('/token', response_model=Token)
