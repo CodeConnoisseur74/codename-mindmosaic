@@ -2,11 +2,8 @@ import logging
 
 import requests
 import streamlit as st
-from decouple import config
+from config import HOST, PORT
 
-# Load configuration from environment variables
-HOST = config('HOST', default='http://127.0.0.1')
-PORT = config('PORT', default='8080')
 TOKEN_ENDPOINT = f'{HOST}:{PORT}/token'
 
 # 🔹 Initialize session state

@@ -1,10 +1,7 @@
 import requests
 import streamlit as st
-from decouple import config
+from config import HOST, PORT
 
-# Load configuration
-HOST = config('HOST', default='http://127.0.0.1')
-PORT = config('PORT', default='8080')
 REGISTER_ENDPOINT = f'{HOST}:{PORT}/register'
 
 

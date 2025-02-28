@@ -1,9 +1,8 @@
 import requests
 import streamlit as st
+from config import HOST, PORT
 
-# Backend configuration
-HOST = 'http://localhost'
-PORT = '8080'
+# ✅ Use values from config.py
 CREATE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/create_study_plan'
 
 # 🔹 Ensure user is logged in

@@ -1,12 +1,12 @@
 import requests
 import streamlit as st
+from config import HOST, PORT  # ✅ Import centralized settings
 
-# Backend configuration
-HOST = 'http://localhost'
-PORT = '8080'
+# ✅ Construct API endpoints dynamically
 USER_STUDY_PLANS_ENDPOINT = f'{HOST}:{PORT}/get_study_plans'
 DELETE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/delete_study_plan'
 UPDATE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/update_study_plan'
+
 
 # 🔹 Ensure user is logged in
 if 'token' not in st.session_state or not st.session_state['token']:

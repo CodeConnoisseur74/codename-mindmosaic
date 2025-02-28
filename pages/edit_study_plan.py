@@ -1,9 +1,7 @@
 import requests
 import streamlit as st
+from config import HOST, PORT
 
-# Backend configuration
-HOST = 'http://localhost'
-PORT = '8080'
 USER_STUDY_PLANS_ENDPOINT = f'{HOST}:{PORT}/get_study_plans'
 DELETE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/delete_study_plan'
 UPDATE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/update_study_plan'

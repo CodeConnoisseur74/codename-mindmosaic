@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+from config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-
-from api.config import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
 
 from .db import get_user
 from .models import TokenData
