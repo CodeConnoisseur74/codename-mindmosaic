@@ -3,6 +3,7 @@ from datetime import timedelta
 from uuid import UUID
 
 import marvin
+from config import ACCESS_TOKEN_EXPIRE_MINUTES
 from decouple import config
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -27,8 +28,6 @@ from .models import (
 # Load secret settings
 openai_api_key = config('MARVIN_OPENAI_API_KEY')
 marvin.settings.openai.api_key = openai_api_key
-
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @asynccontextmanager
@@ -136,11 +135,11 @@ async def delete_study_plan(
     """
     Delete a study plan if it belongs to the current user.
     """
-    study_plan = (
-        session.query(StudyPlan)
-        .filter(StudyPlan.plan_id == plan_id, StudyPlan.user_id == current_user.id)
-        .first()
-    )
+    study_plan = session.exec(
+        select(StudyPlan).where(
+            StudyPlan.plan_id == plan_id, StudyPlan.user_id == current_user.id
+        )
+    ).first()
 
     if not study_plan:
         raise HTTPException(

@@ -1,10 +1,4 @@
 import streamlit as st
-from decouple import config
-
-# Load configuration from environment variables
-HOST = config('HOST', default='http://127.0.0.1')
-PORT = config('PORT', default='8080')
-BASE_URL = f'{HOST}:{PORT}'
 
 # Sidebar Navigation using st.switch_page
 st.sidebar.title('Navigation')
