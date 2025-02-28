@@ -6,6 +6,7 @@ HOST = 'http://localhost'
 PORT = '8080'
 USER_STUDY_PLANS_ENDPOINT = f'{HOST}:{PORT}/get_study_plans'
 DELETE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/delete_study_plan'
+UPDATE_STUDY_PLAN_ENDPOINT = f'{HOST}:{PORT}/update_study_plan'
 
 # 🔹 Ensure user is logged in
 if 'token' not in st.session_state or not st.session_state['token']:
@@ -39,6 +40,21 @@ def delete_study_plan(plan_id):
         st.error(f'❌ Failed to delete study plan: {e}')
 
 
+def update_study_plan(plan_id, updated_data, token):
+    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+    try:
+        response = requests.put(
+            f'{UPDATE_STUDY_PLAN_ENDPOINT}/{plan_id}',
+            json=updated_data,
+            headers=headers,
+        )
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        st.error(f'❌ Failed to update study plan: {e}')
+        return None
+
+
 # 🔹 Dashboard UI
 st.title('Dashboard')
 st.subheader('Your Study Plans')
@@ -54,30 +70,29 @@ if not study_plans:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button('➕ Create New Study Plan', use_container_width=True):
-            st.switch_page('pages/create_study_plan.py')
+            st.switch_page('pages/view_study_plan.py')
 
-# 🔹 Display Study Plans if they exist
-else:
-    for plan in study_plans:
-        with st.expander(f'📄 Study Plan {plan["plan_id"]}'):
-            st.write(f'**🕒 Created On:** {plan["created_at"]}')
-            st.write(f'**🎯 Goals:** {plan["input_data"]["goals"]}')
-            st.write(f'**📅 Days:** {plan["input_data"]["days"]}')
-            st.write(f'**⏳ Time Per Day:** {plan["input_data"]["time_per_day"]} min')
 
-            col1, col2 = st.columns([1, 1])
+# 🔹 Add an Edit button for each study plan
+for plan in study_plans:
+    with st.expander(f'📄 Study Plan {plan["plan_id"]}'):
+        st.write(f'**🕒 Created On:** {plan["created_at"]}')
+        st.write(f'**🎯 Goals:** {plan["input_data"]["goals"]}')
+        st.write(f'**📅 Days:** {plan["input_data"]["days"]}')
+        st.write(f'**⏳ Time Per Day:** {plan["input_data"]["time_per_day"]} min')
 
-            with col1:
-                if st.button(
-                    f'📖 View Study Plan {plan["plan_id"]}', key=plan['plan_id']
-                ):
-                    st.session_state['study_plan'] = plan
-                    st.switch_page('pages/create_study_plan.py')
+        col1, col2, col3 = st.columns([1, 1, 1])
 
-            with col2:
-                if st.button(
-                    '🗑️ Delete',
-                    key=f'delete-{plan["plan_id"]}',
-                    help='Delete this study plan',
-                ):
-                    delete_study_plan(plan['plan_id'])  # Call delete function
+        with col1:
+            if st.button('📖 View', key=f'view-{plan["plan_id"]}'):
+                st.session_state['study_plan'] = plan
+                st.switch_page('pages/create_study_plan.py')
+
+        with col2:
+            if st.button('📝 Edit', key=f'edit-{plan["plan_id"]}'):
+                st.session_state['edit_plan'] = plan
+                st.switch_page('pages/edit_study_plan.py')
+
+        with col3:
+            if st.button('🗑️ Delete', key=f'delete-{plan["plan_id"]}'):
+                delete_study_plan(plan['plan_id'])

@@ -7,14 +7,22 @@ from decouple import config
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from .ai import create_study_plan
 from .auth import authenticate_user, create_access_token, get_current_user
 from .db import get_session, init_db, save_study_plan
 from .db import get_study_plan as get_study_plan_db
 from .db import get_study_plans as get_study_plans_db
-from .models import StudyPlan, StudyPlanInput, Token, User, UserCreate, UserResponse
+from .models import (
+    StudyPlan,
+    StudyPlanInput,
+    StudyPlanOutput,
+    Token,
+    User,
+    UserCreate,
+    UserResponse,
+)
 
 # Load secret settings
 openai_api_key = config('MARVIN_OPENAI_API_KEY')
@@ -36,7 +44,7 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 @app.post('/register/', response_model=UserResponse)
 async def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    db_user = session.query(User).filter(User.username == user.username).first()
+    db_user = session.exec(select(User).where(User.username == user.username)).first()
     if db_user:
         raise HTTPException(status_code=400, detail='Username already registered')
 
@@ -90,31 +98,17 @@ async def get_study_plan(
     return study_plan
 
 
-@app.get(
-    '/get_study_plans',
-    response_model=list[
-        dict
-    ],  # Return a list of dictionaries instead of raw DB objects
-    dependencies=[Depends(get_current_user)],
-)
+@app.get('/get_study_plans', response_model=list[StudyPlan])  # ✅ Return objects
 async def get_study_plans(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
-) -> list[dict]:
+) -> list[StudyPlan]:  # ✅ List of StudyPlan objects
     study_plans = get_study_plans_db(current_user.id)
 
     if not study_plans:
-        return []  # Return empty list instead of 404
+        return []
 
-    return [
-        {
-            'plan_id': str(sp.plan_id),
-            'created_at': sp.created_at,
-            'input_data': sp.input_data,
-            'study_plan': sp.study_plan,
-        }
-        for sp in study_plans
-    ]
+    return study_plans  # ✅ Directly return StudyPlan objects
 
 
 @app.post('/token', response_model=Token)
@@ -157,3 +151,38 @@ async def delete_study_plan(
     session.commit()
 
     return {'message': 'Study plan deleted successfully'}
+
+
+@app.put('/update_study_plan/{plan_id}', response_model=StudyPlan)
+async def update_study_plan(
+    plan_id: UUID,
+    updated_plan: StudyPlanInput,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    # Fetch the existing study plan
+    study_plan = session.exec(
+        select(StudyPlan).where(
+            StudyPlan.plan_id == plan_id, StudyPlan.user_id == current_user.id
+        )
+    ).first()
+
+    if not study_plan:
+        raise HTTPException(
+            status_code=404, detail='Study plan not found or not authorized.'
+        )
+
+    # ✅ Update the study plan details
+    study_plan.input_data = updated_plan.model_dump()
+    updated_study_plan = create_study_plan(updated_plan)
+
+    if not isinstance(updated_study_plan, StudyPlanOutput):
+        raise HTTPException(status_code=500, detail='Invalid study plan format.')
+
+    study_plan.study_plan = updated_study_plan.model_dump()
+
+    session.add(study_plan)
+    session.commit()
+    session.refresh(study_plan)
+
+    return study_plan
