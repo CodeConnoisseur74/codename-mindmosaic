@@ -185,3 +185,9 @@ async def update_study_plan(
     session.refresh(study_plan)
 
     return study_plan
+
+
+if __name__ == '__main__':
+    import uvicorn
+
+    uvicorn.run('api.main:app', host='0.0.0.0', port=8000, reload=True)
