@@ -1,102 +1,23 @@
 # 📚 Study Plan AI
 
-This is a FastAPI + Streamlit project that allows users to search for books, track their reading, and receive AI-generated book recommendations.
+This is a FastAPI + MarvinAI + Streamlit project that allows users to create Study plans based on their chosen subject matter
 
-## Live Demo
+### 🤖 AI-Powered Study Plan Schedule
 
-Checkout the live application on Streamlit: [StudyPlanAI](https://streamlit.app)
-
-## Table of Contents
-1. [Features](#features)
-2. [API Endpoints](#API-Endpoints)
-3. [Installation & Setup](#Installation-&-Setup)
-4. [Tech Stack](#Tech-Stack)
-5. [Future Features](#future-features)
-6. [License](#license)
-7. [Acknowledgments](#acknowledgments)
-
-## 🚀 Features
-
-- **📖 Search Books**: Search for books using the Google Books API.
-
-  <img src="screenshots/book_search.png" alt="Book Search" width="500">
-- **📚 Track Your Reads**: Save books to a personal reading list.
-
-  <img src="screenshots/saved_books.png" alt="Saved Books" width="500">
-- **🤖 AI Recommendations**: Get book recommendations based on your interests.
-
-  <img src="screenshots/ai_recommendation.png" alt="AI Recommendations" width="500">
-- **📊 Interactive UI**: A user-friendly interface built with Streamlit.
-
-
-## 📡 API Endpoints
-
-### 🔍 Book Search
-#### GET /google-books/search?q={query}`
-Searches for books using the Google Books API.
-
-- **Query Params:** `term` (book title, author, or keyword)
-- **Response:** Returns a list of the top 10 or so matching books.
-
----
-
-### 📚 User Library
-
-#### POST /user-books/
-Adds a book to the user's personal collection.
-
-- **Body:**
-  ```json
-  {
-    "title": "Book Name",
-    "author": "Author",
-  }
-- Response: Returns the saved book details.
-
-####  GET /user-books/
-Retrieves all books in the user's saved collection.
-
-#### DELETE /user-books/{user_id/{book_id}/
-Removes a book from the collection.
-Response: { "message": "Book deleted successfully" }
-
-
-### 🤖 AI Recommendations
-
-#### POST /recommendations/
-Generates book recommendations based on a user's saved books.
-
--**Body:**
-  ```json
-  { "books": ["Book 1", "Book 2"] }
-  ```
-Response: A list of recommended books.
-
-### 🤖 AI-Powered Book Recommendations
-
-This app uses Marvin AI to generate personalized book recommendations.
+This app uses Marvin AI to generate Study Plam recommendations.
 
 How It Works:
-1. The user saves books they’ve read or are interested in.
+1. The user saves
 2. The backend sends this data to the AI recommendation system.
-3. The AI suggests books based on themes, genres, and patterns.
-
-Example Output:
-  ```bash
-  {
-    "recommendations": [
-      { "title": "The Hobbit", "author": "J.R.R. Tolkien" },
-      { "title": "The Name of the Wind", "author": "Patrick Rothfuss" }
-    ]
-  }
-  ```
+3. The AI suggests ... based on .....
 
 ## 🎯 Installation & Setup
 
 1. Clone the Repository:
    ```bash
-   git clone https://github.com/Zmerrill1/book-tracker.git
-   cd book-tracker
+   git clone https://github.com/CodeConnoisseur74/codename-mindmosaic
+
+   cd codename-mindmosaic
    ```
 2. Set Up Backend (FastAPI):
   Ensure you have Python installed, then create a virtual environment:
@@ -136,8 +57,7 @@ Example Output:
 
 ## 🛠️ Tech Stack
 - Backend: [FastAPI](https://fastapi.tiangolo.com), [PostgreSQL](https://www.postgresql.org), [Alembic (for migrations)](https://pypi.org/project/alembic/)
-- Frontend: [Streamlit](https://streamlit.io)
-- External APIs: [Google Books API](https://developers.google.com/books), [Marvin AI (for recommendations)](https://www.askmarvin.ai)
+- Frontend: [Streamlit](https://streamlit.io), [Marvin AI (for recommendations)](https://www.askmarvin.ai)
 - Deployment: [Fly.io (backend)](https://fly.io), [Streamlit Cloud (frontend)](https://streamlit.io/cloud)
 
 To deploy updates:
@@ -152,7 +72,7 @@ To deploy updates:
 
 ## 🔥 Future Features
 
-- 📅 Reading progress tracking
+- 📅 Calander
 - 🏆 Challenges & goals
 - 📝 Contributing
 
