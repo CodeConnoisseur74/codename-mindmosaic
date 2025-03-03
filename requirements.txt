@@ -96,6 +96,7 @@ protontricks==1.12.1.dev7+g159460e
 psutil==6.1.1
 psycopg==3.2.3
 psycopg2==2.9.10
+psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure_eval==0.2.3
 pwquality==1.4.5
