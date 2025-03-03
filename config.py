@@ -1,7 +1,7 @@
 from decouple import config
 
 # Load environment variables from .env
-HOST = config('HOST', default='http://localhost')
+HOST = config('HOST', default='https://codename-mindmosaic.fly.dev')
 PORT = config('PORT', default='8080')
 DATABASE_URL = config('DATABASE_URL')  # This should be in .env
 SECRET_KEY = config('SECRET_KEY')  # Load secret keys safely
