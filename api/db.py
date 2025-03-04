@@ -1,12 +1,10 @@
 import uuid
 
-from decouple import config
+from config import DATABASE_URL
 from sqlmodel import Session, SQLModel, and_, create_engine, select
 
 from .ai import StudyPlanInput, StudyPlanOutput
 from .models import StudyPlan, User
-
-DATABASE_URL = config('DATABASE_URL')
 
 engine = create_engine(DATABASE_URL)
 
