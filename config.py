@@ -1,5 +1,6 @@
 from decouple import config
 
+# Fly.io
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 HOST = config('HOST', default='https://codename-mindmosaic.fly.dev')
