@@ -11,7 +11,7 @@ if IS_PRODUCTION:
 else:
     DATABASE_URL = config(
         'DATABASE_URL',
-        default='postgresql://postgres:password@localhost:5432/codename-mindmosaic',
+        default='postgresql://postgres:bobby11@localhost:5432/codename-mindmosaic',
     )  # ✅ Default to local database
     HOST = 'http://127.0.0.1'
     PORT = 8080
