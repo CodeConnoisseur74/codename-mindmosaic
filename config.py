@@ -3,20 +3,18 @@ from decouple import config
 # 🔹 Detect if running on Fly.io (checks if "FLY_APP_NAME" exists)
 IS_PRODUCTION = config('FLY_APP_NAME', default=None) is not None
 
-# 🔹 Set database URL based on environment
+# 🔹 Always get DATABASE_URL from the environment (set in Fly.io or .env)
+DATABASE_URL = config('DATABASE_URL')
+
+# 🔹 Set API host based on environment
 if IS_PRODUCTION:
-    DATABASE_URL = config('FLY_DATABASE_URL')  # ✅ Use Fly.io database
     HOST = 'https://codename-mindmosaic.fly.dev'
     PORT = 443
 else:
-    DATABASE_URL = config(
-        'DATABASE_URL',
-        default='postgresql://postgres:bobby11@localhost:5432/codename-mindmosaic',
-    )  # ✅ Default to local database
     HOST = 'http://127.0.0.1'
     PORT = 8080
 
-# 🔹 Ensure PORT is an integer (since environment variables are strings)
+# 🔹 Ensure PORT is an integer
 PORT = int(PORT)
 
 # 🔹 Other settings
